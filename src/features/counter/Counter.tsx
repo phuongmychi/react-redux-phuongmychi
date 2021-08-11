@@ -1,6 +1,6 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from "react";
 
-import { useAppSelector, useAppDispatch } from '../../app/hooks';
+import { useAppSelector, useAppDispatch } from "../../app/hooks";
 import {
   decrement,
   increment,
@@ -8,18 +8,60 @@ import {
   incrementAsync,
   incrementIfOdd,
   selectCount,
-} from './counterSlice';
-import styles from './Counter.module.css';
+  getAllvideo,
+  videoA,
+} from "./counterSlice";
+import PropTypes from "prop-types";
+import { RootState } from "../../app/store";
+import styles from "./Counter.module.css";
+import { connect } from "react-redux";
+import { isEmpty } from "lodash";
 
 export function Counter() {
   const count = useAppSelector(selectCount);
   const dispatch = useAppDispatch();
-  const [incrementAmount, setIncrementAmount] = useState('2');
+  const [incrementAmount, setIncrementAmount] = useState("2");
+  const data = useAppSelector(videoA);
+  console.log(data);
 
   const incrementValue = Number(incrementAmount) || 0;
+  useEffect(() => {
+    dispatch(getAllvideo());
+  }, []);
 
   return (
     <div>
+      <div className="container">
+        <div className="row">
+          {data.slice(0, count).map((item: any) => (
+            <div className="col-sm-3">
+              <figure>
+                <a
+                  href={
+                    `https://phuongmychi.vn/video/watch?id=` +
+                    item.snippet.resourceId.videoId
+                  }
+                >
+                  {isEmpty(item.snippet.thumbnails.maxres) === true ? (
+                    ""
+                  ) : (
+                    <img
+                      src={item.snippet.thumbnails.maxres.url}
+                      className="img-fluid"
+                      alt={
+                        isEmpty(item.snippet.title) === true
+                          ? ""
+                          : item.snippet.title
+                      }
+                    />
+                  )}
+                </a>
+              </figure>
+              <p>{item.snippet.title}</p>
+            </div>
+          ))}
+        </div>
+      </div>
       <div className={styles.row}>
         <button
           className={styles.button}
@@ -66,3 +108,7 @@ export function Counter() {
     </div>
   );
 }
+interface IRootState {
+  state: RootState;
+}
+const mapStateToProps = (state: IRootState) => state;
