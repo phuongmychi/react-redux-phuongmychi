@@ -22,7 +22,6 @@ export function Counter() {
   const dispatch = useAppDispatch();
   const [incrementAmount, setIncrementAmount] = useState("2");
   const data = useAppSelector(videoA);
-  console.log(data);
 
   const incrementValue = Number(incrementAmount) || 0;
   useEffect(() => {
@@ -34,7 +33,7 @@ export function Counter() {
       <div className="container">
         <div className="row">
           {data.slice(0, count).map((item: any) => (
-            <div className="col-sm-3">
+            <div className="col-sm-3" key={item.snippet.resourceId.videoId}>
               <figure>
                 <a
                   href={
