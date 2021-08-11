@@ -22,6 +22,21 @@ export function Counter() {
   const dispatch = useAppDispatch();
   const [incrementAmount, setIncrementAmount] = useState("2");
   const data = useAppSelector(videoA);
+  const [scrollPosition, setSrollPosition] = useState(0);
+  const handleScroll = () => {
+    const position = window.pageYOffset;
+    setSrollPosition(position);
+    if ((window.innerHeight + window.pageYOffset) >= document.body.offsetHeight) {
+      dispatch(increment())
+    }
+};
+  useEffect(() => {
+    window.addEventListener('scroll', handleScroll, { passive: true });
+
+    return () => {
+        window.removeEventListener('scroll', handleScroll);
+    };
+}, []);
 
   const incrementValue = Number(incrementAmount) || 0;
   useEffect(() => {
@@ -36,6 +51,7 @@ export function Counter() {
             <div className="col-sm-3" key={item.snippet.resourceId.videoId}>
               <figure>
                 <a
+                target="_blank"
                   href={
                     `https://phuongmychi.vn/video/watch?id=` +
                     item.snippet.resourceId.videoId
@@ -56,7 +72,7 @@ export function Counter() {
                   )}
                 </a>
               </figure>
-              <p>{item.snippet.title}</p>
+              <p style={{fontSize:'13px'}}>{item.snippet.title}</p>
             </div>
           ))}
         </div>
